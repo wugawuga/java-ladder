@@ -2,7 +2,7 @@ package ladder.domain;
 
 import java.util.Random;
 
-public class RandomBooleanGenerator implements LadderGameCreateLineGenerator {
+public class RandomLineGenerator implements LadderGameCreateLineGenerator {
 
     private final Random random = new Random();
 
