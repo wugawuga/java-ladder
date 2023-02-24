@@ -11,10 +11,10 @@ public class LadderGame {
     private final Players players;
     private final Ladder ladder;
 
-    public LadderGame(final LadderGameCreateLineBooleanGenerator booleanGenerator, final Players players,
+    public LadderGame(final LadderGameCreateLineGenerator generator, final Players players,
                       final Height height) {
         this.players = players;
-        this.ladder = new Ladder(booleanGenerator, height, players.count() - LADDER_WIDTH_SUBTRACT_VALUE);
+        this.ladder = new Ladder(generator, height, players.count() - LADDER_WIDTH_SUBTRACT_VALUE);
     }
 
     public List<String> getPlayerNames() {

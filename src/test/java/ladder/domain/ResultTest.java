@@ -22,8 +22,8 @@ public class ResultTest {
         Bottoms bottoms = new Bottoms(List.of("꽝", "우승"), players);
         Result result = new Result(players, bottoms);
 
-        assertThat(result.resultByName("name1")).containsValue("꽝");
-        assertThat(result.resultByName("name2")).containsValue("우승");
+        assertThat(result.resultByName("name1").getOverallResult()).containsValue("꽝");
+        assertThat(result.resultByName("name2").getOverallResult()).containsValue("우승");
     }
 
     @Test
@@ -32,6 +32,6 @@ public class ResultTest {
         Bottoms bottoms = new Bottoms(List.of("꽝", "우승", "꽝"), players);
         Result result = new Result(players, bottoms);
 
-        assertThat(result.resultByName("all")).containsValues("꽝", "꽝", "우승");
+        assertThat(result.resultByName("all").getOverallResult()).containsValues("꽝", "꽝", "우승");
     }
 }

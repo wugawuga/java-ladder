@@ -4,7 +4,7 @@ import java.util.List;
 import ladder.domain.Bottoms;
 import ladder.domain.Height;
 import ladder.domain.LadderGame;
-import ladder.domain.LadderGameCreateLineBooleanGenerator;
+import ladder.domain.LadderGameCreateLineGenerator;
 import ladder.domain.Players;
 import ladder.domain.Result;
 import ladder.view.InputView;
@@ -14,12 +14,12 @@ public class LadderGameRunner {
 
     private static final String ALL_CONDITION = "all";
     private boolean QUIT_CONDITION = true;
-    private final LadderGameCreateLineBooleanGenerator booleanGenerator;
+    private final LadderGameCreateLineGenerator booleanGenerator;
     private final InputView inputView;
     private final OutputView outputView;
 
     public LadderGameRunner(
-            final LadderGameCreateLineBooleanGenerator booleanGenerator,
+            final LadderGameCreateLineGenerator booleanGenerator,
             final InputView inputView,
             final OutputView outputView
     ) {
