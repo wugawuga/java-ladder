@@ -26,7 +26,7 @@ public class OutputView {
     private static final String ERROR_MESSAGE = "[ERROR] ";
     private static final int ONE_NAME_SEARCH_CONDITION = 1;
 
-    public void printResult(final LadderGame ladderGame, final Bottoms bottom) {
+    public void printResult(final LadderGame ladderGame) {
         System.out.println(GAME_RESULT_MESSAGE);
 
         final int maxNameLength = getMaxNameLength(ladderGame.getPlayerNames());
@@ -34,7 +34,7 @@ public class OutputView {
 
         final String initialPlayerName = findInitialPlayerName(ladderGame.getPlayerNames());
         System.out.println(generateLadderMessage(initialPlayerName.length(), maxNameLength, ladderGame.getLadder()));
-        System.out.println(generateResultMessages(bottom, maxNameLength));
+        System.out.println(generateResultMessages(ladderGame.getBottoms(), maxNameLength));
     }
 
     private String generateResultMessages(final Bottoms bottom, final int maxNameLength) {

@@ -10,11 +10,13 @@ public class LadderGame {
 
     private final Players players;
     private final Ladder ladder;
+    private final Bottoms bottoms;
 
     public LadderGame(final LadderGameCreateLineGenerator generator, final Players players,
-                      final Height height) {
+                      final Height height, final Bottoms bottoms) {
         this.players = players;
         this.ladder = new Ladder(generator, height, players.count() - LADDER_WIDTH_SUBTRACT_VALUE);
+        this.bottoms = bottoms;
     }
 
     public List<String> getPlayerNames() {
@@ -47,5 +49,9 @@ public class LadderGame {
         if (connected) {
             Collections.swap(playerNames, index, index + 1);
         }
+    }
+
+    public Bottoms getBottoms() {
+        return bottoms;
     }
 }

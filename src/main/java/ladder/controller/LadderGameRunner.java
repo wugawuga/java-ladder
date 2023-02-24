@@ -33,16 +33,16 @@ public class LadderGameRunner {
         final Bottoms bottoms = readBottoms(players);
         final Height height = readHeight();
 
-        final LadderGame ladderGame = new LadderGame(booleanGenerator, players, height);
-        outputView.printResult(ladderGame, bottoms);
+        final LadderGame ladderGame = new LadderGame(booleanGenerator, players, height, bottoms);
+        outputView.printResult(ladderGame);
 
-        playLadderGame(ladderGame, bottoms, height);
+        playLadderGame(ladderGame, height);
     }
 
-    private void playLadderGame(final LadderGame ladderGame, final Bottoms bottoms, final Height height) {
+    private void playLadderGame(final LadderGame ladderGame, final Height height) {
         Players earlyPlayers = new Players(ladderGame.getPlayerNames());
         Players playersWhoFinishedGame = ladderGame.makePlayersWhoFinishedGame(height);
-        Result result = new Result(playersWhoFinishedGame, bottoms);
+        Result result = new Result(playersWhoFinishedGame, ladderGame);
 
         searchLadderGameResultByInput(result, earlyPlayers);
     }

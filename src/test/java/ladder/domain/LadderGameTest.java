@@ -16,14 +16,18 @@ public class LadderGameTest {
     @Test
     void 참가자들의_이름을_반환한다() {
         final Players players = getPlayers("name1", "name2");
-        LadderGame ladderGame = new LadderGame(new TestBooleanGenerator(List.of(true, true)), players, new Height(1));
+        final Bottoms bottoms = getBottoms(players, "1", "2");
+        LadderGame ladderGame = new LadderGame(new TestBooleanGenerator(List.of(true, true)), players, new Height(1),
+                bottoms);
         assertThat(ladderGame.getPlayerNames()).containsExactly("name1", "name2");
     }
 
     @Test
     void 생성된_사다리를_반환한다() {
         final Players players = getPlayers("name1", "name2");
-        LadderGame ladderGame = new LadderGame(new TestBooleanGenerator(List.of(true, true)), players, new Height(2));
+        final Bottoms bottoms = getBottoms(players, "1", "2");
+        LadderGame ladderGame = new LadderGame(new TestBooleanGenerator(List.of(true, true)), players, new Height(2),
+                bottoms);
         assertThat(ladderGame.getLadder())
                 .extracting(Line::getLine)
                 .containsExactly(
@@ -35,7 +39,9 @@ public class LadderGameTest {
     @Test
     void 결과에_따라_참가자순서를_변경해_반환한다() {
         final Players players = getPlayers("name1", "name2");
-        LadderGame ladderGame = new LadderGame(new TestBooleanGenerator(List.of(true, true)), players, new Height(1));
+        Bottoms bottoms = new Bottoms(List.of("1", "2"), players);
+        LadderGame ladderGame = new LadderGame(new TestBooleanGenerator(List.of(true, true)), players, new Height(1),
+                bottoms);
 
         Players resultPlayers = ladderGame.makePlayersWhoFinishedGame(new Height(1));
 
@@ -45,7 +51,11 @@ public class LadderGameTest {
         );
     }
 
-    private static Players getPlayers(String... playerNames) {
+    private Players getPlayers(String... playerNames) {
         return new Players(List.of(playerNames));
+    }
+
+    private Bottoms getBottoms(Players players, String... bottoms) {
+        return new Bottoms(List.of(bottoms), players);
     }
 }

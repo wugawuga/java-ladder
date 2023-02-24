@@ -17,9 +17,9 @@ public class Result {
 
     private final Map<String, String> result;
 
-    public Result(final Players players, final Bottoms bottom) {
+    public Result(final Players players, final LadderGame ladderGame) {
         List<String> names = players.getNames();
-        List<String> bottoms = bottom.toList();
+        List<String> bottoms = ladderGame.getBottoms().toList();
         validateSize(names, bottoms);
         result = makeResult(names, bottoms);
     }
@@ -32,11 +32,11 @@ public class Result {
     }
 
     private Map<String, String> makeResult(final List<String> names, final List<String> results) {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> oneResult = new HashMap<>();
         for (int i = 0; i < names.size(); i++) {
-            map.put(names.get(i), results.get(i));
+            oneResult.put(names.get(i), results.get(i));
         }
-        return map;
+        return oneResult;
     }
 
     private void validateSize(final List<String> playerNames, final List<String> results) {
