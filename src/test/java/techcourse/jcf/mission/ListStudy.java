@@ -191,20 +191,31 @@ public class ListStudy {
         private String[] list;
 
         public SimpleArrayList() {
-            this.list = new String[1];
+            this.list = new String[5];
         }
 
         @Override
         public boolean add(final String value) {
-            if (Objects.isNull(list[list.length - 1])) {
-                list[list.length - 1] = value;
-                return true;
+            validateNull(value);
+
+            for (int index = 0; index < list.length; index++) {
+                if (Objects.isNull(list[index])) {
+                    list[index] = value;
+                    return true;
+                }
             }
-            String[] newArray = new String[list.length + 1];
+
+            String[] newArray = new String[(int) (list.length * 1.5)];
             System.arraycopy(list, 0, newArray, 0, list.length);
+            newArray[list.length] = value;
             list = newArray;
-            newArray[newArray.length - 1] = value;
             return true;
+        }
+
+        private void validateNull(final String value) {
+            if (Objects.isNull(value)) {
+                throw new IllegalArgumentException("null값은 입력할 수 없습니다.");
+            }
         }
 
         @Override
@@ -231,7 +242,7 @@ public class ListStudy {
 
         @Override
         public String get(final int index) {
-            if (list.length <= index) {
+            if (list.length <= index || Objects.isNull(list[index])) {
                 throw new IllegalArgumentException("인덱스를 확인해주세요.");
             }
             return list[index];
@@ -240,6 +251,9 @@ public class ListStudy {
         @Override
         public boolean contains(final String value) {
             for (String str : list) {
+                if (Objects.isNull(str)) {
+                    return false;
+                }
                 if (str.equals(value)) {
                     return true;
                 }
@@ -259,7 +273,14 @@ public class ListStudy {
 
         @Override
         public int size() {
-            return list.length;
+            int count = 0;
+            for (String str : list) {
+                if (Objects.isNull(str)) {
+                    break;
+                }
+                count++;
+            }
+            return count == 0 ? 1 : count;
         }
 
         @Override
@@ -275,15 +296,18 @@ public class ListStudy {
         @Override
         public boolean remove(final String value) {
             for (int i = 0; i < list.length; i++) {
+                if (Objects.isNull(list[i])) {
+                    break;
+                }
                 if (list[i].equals(value)) {
                     list[i] = null;
                     if (i == list.length - 1) {
-                        String[] newArray = new String[list.length - 1];
+                        String[] newArray = new String[(int) (list.length * 1.5)];
                         System.arraycopy(list, 0, newArray, 0, i);
                         list = newArray;
                         return true;
                     } else {
-                        String[] newArray = new String[list.length - 1];
+                        String[] newArray = new String[(int) (list.length * 1.5)];
                         System.arraycopy(list, 0, newArray, 0, i);
                         System.arraycopy(list, i + 1, newArray, i, list.length - i - 1);
                         list = newArray;
@@ -296,7 +320,7 @@ public class ListStudy {
 
         @Override
         public String remove(final int index) {
-            if (list.length <= index) {
+            if (Objects.isNull(list[index])) {
                 throw new IllegalArgumentException("인덱스를 확인해주세요.");
             }
             String temp = list[index];
@@ -317,7 +341,7 @@ public class ListStudy {
 
         @Override
         public void clear() {
-            list = new String[1];
+            list = new String[10];
         }
 
         @Override
