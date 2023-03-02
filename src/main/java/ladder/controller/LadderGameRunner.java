@@ -12,7 +12,8 @@ import ladder.view.OutputView;
 
 public class LadderGameRunner {
 
-    private static final String ALL_CONDITION = "all";
+    private static final String ALL_SEARCH_CONDITION = "all";
+
     private boolean QUIT_CONDITION = true;
     private final LadderGameCreateLineGenerator booleanGenerator;
     private final InputView inputView;
@@ -57,7 +58,7 @@ public class LadderGameRunner {
     }
 
     private void isInputAll(final String input) {
-        if (input.equals(ALL_CONDITION)) {
+        if (input.equals(ALL_SEARCH_CONDITION)) {
             QUIT_CONDITION = false;
         }
     }
