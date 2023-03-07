@@ -71,7 +71,7 @@ public class ListStudy {
         list.add("1");
 
         assertThatThrownBy(() -> list.get(1))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessage("인덱스를 확인해주세요.");
     }
 
@@ -170,7 +170,7 @@ public class ListStudy {
         assertThat(listA.remove(2)).isEqualTo("2");
         assertThat(listA.size()).isEqualTo(2);
         assertThatThrownBy(() -> listA.remove(2))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessage("인덱스를 확인해주세요.");
     }
 
@@ -183,7 +183,7 @@ public class ListStudy {
 
         listA.clear();
 
-        assertThat(listA.size()).isEqualTo(1);
+        assertThat(listA.size()).isEqualTo(0);
     }
 
     @Test
@@ -247,7 +247,7 @@ public class ListStudy {
         private int currentInsertIndex = 0;
 
         public SimpleArrayList() {
-            this.list = new String[5];
+            this.list = new String[10];
         }
 
         @Override
@@ -267,9 +267,12 @@ public class ListStudy {
         @Override
         public void add(final int index, final String value) {
             if (list.length <= index) {
-                String[] newArray = new String[list.length >> 1 + list.length];
+                int i = list.length + (list.length >> 1);
+                System.out.println("i = " + i);
+                String[] newArray = new String[(list.length >> 1) + list.length];
                 System.arraycopy(list, 0, newArray, 0, list.length);
-                newArray[currentInsertIndex++] = value;
+                newArray[index] = value;
+                currentInsertIndex = index + 1;
                 list = newArray;
                 return;
             }
@@ -326,6 +329,9 @@ public class ListStudy {
         @Override
         public int indexOf(final String value) {
             for (int index = 0; index < list.length; index++) {
+                if (list[index] == null) {
+                    continue;
+                }
                 if (list[index].equals(value)) {
                     return index;
                 }
@@ -347,6 +353,9 @@ public class ListStudy {
         public boolean remove(final String value) {
             for (int i = 0; i < list.length; i++) {
                 // 매번 삭제되면 복사를 해야할까?
+                if (list[i] == null) {
+                    continue;
+                }
                 if (list[i].equals(value)) {
                     if (i == 0) {
                         for (int j = 0; j < list.length - 1; j++) {
@@ -370,7 +379,7 @@ public class ListStudy {
 
         @Override
         public String remove(final int index) {
-            if (list.length < index) {
+            if (currentInsertIndex <= index) {
                 throw new IndexOutOfBoundsException("인덱스를 확인해주세요.");
             }
             String temp = list[index];
