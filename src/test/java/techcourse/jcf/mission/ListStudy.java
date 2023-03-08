@@ -268,7 +268,6 @@ public class ListStudy {
         public void add(final int index, final String value) {
             if (list.length <= index) {
                 int i = list.length + (list.length >> 1);
-                System.out.println("i = " + i);
                 String[] newArray = new String[(list.length >> 1) + list.length];
                 System.arraycopy(list, 0, newArray, 0, list.length);
                 newArray[index] = value;
@@ -276,21 +275,18 @@ public class ListStudy {
                 list = newArray;
                 return;
             }
-            for (int i = 0; i < list.length; i++) {
-                if (index == i) {
-                    String temp = list[i];
-                    list[i] = value;
-                    for (int j = i + 1; j < list.length - 1; j++) {
-                        if (j == index + 1) {
-                            list[j] = temp;
-                            continue;
-                        }
-                        list[j] = list[j + 1];
+            for (int i = index; i < currentInsertIndex; i++) {
+                String temp = list[i];
+                list[i] = value;
+                for (int j = i + 1; j < list.length - 1; j++) {
+                    if (j == index + 1) {
+                        list[j] = temp;
+                        continue;
                     }
-                    currentInsertIndex++;
-                    break;
+                    list[j] = list[j + 1];
                 }
             }
+            currentInsertIndex++;
         }
 
         @Override
