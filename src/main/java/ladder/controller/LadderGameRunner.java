@@ -4,7 +4,7 @@ import java.util.List;
 import ladder.domain.Bottoms;
 import ladder.domain.Height;
 import ladder.domain.LadderGame;
-import ladder.domain.LadderGameCreateLineBooleanGenerator;
+import ladder.domain.LadderGameCreateLineGenerator;
 import ladder.domain.Players;
 import ladder.domain.Result;
 import ladder.view.InputView;
@@ -12,14 +12,15 @@ import ladder.view.OutputView;
 
 public class LadderGameRunner {
 
-    private static final String ALL_CONDITION = "all";
+    private static final String ALL_SEARCH_CONDITION = "all";
+
     private boolean QUIT_CONDITION = true;
-    private final LadderGameCreateLineBooleanGenerator booleanGenerator;
+    private final LadderGameCreateLineGenerator booleanGenerator;
     private final InputView inputView;
     private final OutputView outputView;
 
     public LadderGameRunner(
-            final LadderGameCreateLineBooleanGenerator booleanGenerator,
+            final LadderGameCreateLineGenerator booleanGenerator,
             final InputView inputView,
             final OutputView outputView
     ) {
@@ -33,16 +34,16 @@ public class LadderGameRunner {
         final Bottoms bottoms = readBottoms(players);
         final Height height = readHeight();
 
-        final LadderGame ladderGame = new LadderGame(booleanGenerator, players, height);
-        outputView.printResult(ladderGame, bottoms);
+        final LadderGame ladderGame = new LadderGame(booleanGenerator, players, height, bottoms);
+        outputView.printResult(ladderGame);
 
-        playLadderGame(ladderGame, bottoms, height);
+        playLadderGame(ladderGame, height);
     }
 
-    private void playLadderGame(final LadderGame ladderGame, final Bottoms bottoms, final Height height) {
+    private void playLadderGame(final LadderGame ladderGame, final Height height) {
         Players earlyPlayers = new Players(ladderGame.getPlayerNames());
         Players playersWhoFinishedGame = ladderGame.makePlayersWhoFinishedGame(height);
-        Result result = new Result(playersWhoFinishedGame, bottoms);
+        Result result = new Result(playersWhoFinishedGame, ladderGame);
 
         searchLadderGameResultByInput(result, earlyPlayers);
     }
@@ -57,7 +58,7 @@ public class LadderGameRunner {
     }
 
     private void isInputAll(final String input) {
-        if (input.equals(ALL_CONDITION)) {
+        if (input.equals(ALL_SEARCH_CONDITION)) {
             QUIT_CONDITION = false;
         }
     }

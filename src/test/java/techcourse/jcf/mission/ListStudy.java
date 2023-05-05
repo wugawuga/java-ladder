@@ -71,7 +71,7 @@ public class ListStudy {
         list.add("1");
 
         assertThatThrownBy(() -> list.get(1))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessage("인덱스를 확인해주세요.");
     }
 
@@ -170,7 +170,7 @@ public class ListStudy {
         assertThat(listA.remove(2)).isEqualTo("2");
         assertThat(listA.size()).isEqualTo(2);
         assertThatThrownBy(() -> listA.remove(2))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IndexOutOfBoundsException.class)
                 .hasMessage("인덱스를 확인해주세요.");
     }
 
@@ -183,38 +183,110 @@ public class ListStudy {
 
         listA.clear();
 
-        assertThat(listA.size()).isEqualTo(1);
+        assertThat(listA.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void judeTest() {
+        SimpleArrayList values = new SimpleArrayList();
+        values.add("first");
+        values.add("second");
+        System.out.println("values = " + values);
+        assertThat(values.indexOf("second")).isEqualTo(1);
+        assertThat(values.add("third")).isTrue(); // 세 번째 값을 추가한다.
+        assertThat(values.contains("third")).isTrue();
+        assertThat(values.indexOf("third")).isEqualTo(2);
+        values.set(0, "1");
+        assertThat(values.contains("1")).isTrue();
+        System.out.println("values = " + values);
+        values.set(0, "first");
+        System.out.println("values = " + values);
+        assertThat(values.size()).isEqualTo(3); // list의 크기를 구한다.
+        assertThat(values.get(0)).isEqualTo("first"); // 첫 번째 값을 찾는다.
+        assertThat(values.get(1)).isEqualTo("second"); // 첫 번째 값을 찾는다.
+        assertThat(values.get(2)).isEqualTo("third"); // 첫 번째 값을 찾는다.
+        assertThatThrownBy(() -> values.get(3)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(values.contains("first")).isTrue(); // "first" 값이 포함되어 있는지를 확인한다.
+        assertThat(values.contains("forth")).isFalse(); // "first" 값이 포함되어 있는지를 확인한다.
+        assertThat(values.remove(0)).isEqualTo("first"); // 첫 번째 값을 삭제한다.
+        assertThat(values.size()).isEqualTo(2); // 값이 삭제 됐는지 확인한다.
+        assertThat(values.get(0)).isEqualTo("second");
+        assertThat(values.get(1)).isEqualTo("third");
+        assertThat(values.remove(1)).isEqualTo("third"); // 첫 번째 값을 삭제한다.
+        assertThat(values.remove(0)).isEqualTo("second"); // 첫 번째 값을 삭제한다.
+        assertThat(values.add("four")).isTrue();
+        System.out.println(values);
+        assertThat(values.get(0)).isEqualTo("four");
+        System.out.println(values);
+        values.add(0, "five");
+        System.out.println("222번 줄 = " + values);
+        assertThat(values.get(0)).isEqualTo("five");
+        assertThat(values.get(1)).isEqualTo("four");
+        assertThat(values.contains("five")).isTrue();
+        assertThat(values.isEmpty()).isFalse();
+        assertThat(values.indexOf("five")).isEqualTo(0);
+        assertThat(values.remove("five")).isTrue();
+        assertThat(values.get(0)).isEqualTo("four");
+        System.out.println("values = " + values);
+        assertThat(values.set(0, "five")).isEqualTo("four");
+        System.out.println(values);
+        assertThat(values.get(0)).isEqualTo("five");
+        values.clear();
+        assertThat(values.size()).isEqualTo(0);
+        assertThat(values.add("six")).isTrue();
+        assertThat(values.add("seven")).isTrue();
+        values.add(0, "eight");
     }
 
     private class SimpleArrayList implements SimpleList {
 
+        // null을 허용하는가?
+        // array list -> null <- 구현완료
         private String[] list;
 
+        private int currentInsertIndex = 0;
+
         public SimpleArrayList() {
-            this.list = new String[1];
+            this.list = new String[10];
         }
 
         @Override
         public boolean add(final String value) {
-            if (Objects.isNull(list[list.length - 1])) {
-                list[list.length - 1] = value;
+            // 100 <- 전부 반복 <- add <- o(1) 구현완료
+            if (currentInsertIndex == list.length) {
+                String[] newArray = new String[list.length >> 1 + list.length];
+                System.arraycopy(list, 0, newArray, 0, list.length);
+                newArray[currentInsertIndex++] = value;
+                list = newArray;
                 return true;
             }
-            String[] newArray = new String[list.length + 1];
-            System.arraycopy(list, 0, newArray, 0, list.length);
-            list = newArray;
-            newArray[newArray.length - 1] = value;
+            list[currentInsertIndex++] = value;
             return true;
         }
 
         @Override
         public void add(final int index, final String value) {
             if (list.length <= index) {
-                list = new String[index + 1];
-                list[index] = value;
+                int i = list.length + (list.length >> 1);
+                String[] newArray = new String[(list.length >> 1) + list.length];
+                System.arraycopy(list, 0, newArray, 0, list.length);
+                newArray[index] = value;
+                currentInsertIndex = index + 1;
+                list = newArray;
                 return;
             }
-            list[index] = value;
+            for (int i = index; i < currentInsertIndex; i++) {
+                String temp = list[i];
+                list[i] = value;
+                for (int j = i + 1; j < list.length - 1; j++) {
+                    if (j == index + 1) {
+                        list[j] = temp;
+                        continue;
+                    }
+                    list[j] = list[j + 1];
+                }
+            }
+            currentInsertIndex++;
         }
 
         @Override
@@ -231,8 +303,8 @@ public class ListStudy {
 
         @Override
         public String get(final int index) {
-            if (list.length <= index) {
-                throw new IllegalArgumentException("인덱스를 확인해주세요.");
+            if (currentInsertIndex <= index) {
+                throw new IndexOutOfBoundsException("인덱스를 확인해주세요.");
             }
             return list[index];
         }
@@ -240,6 +312,9 @@ public class ListStudy {
         @Override
         public boolean contains(final String value) {
             for (String str : list) {
+                if (Objects.isNull(str)) {
+                    return false;
+                }
                 if (str.equals(value)) {
                     return true;
                 }
@@ -250,6 +325,9 @@ public class ListStudy {
         @Override
         public int indexOf(final String value) {
             for (int index = 0; index < list.length; index++) {
+                if (list[index] == null) {
+                    continue;
+                }
                 if (list[index].equals(value)) {
                     return index;
                 }
@@ -259,36 +337,37 @@ public class ListStudy {
 
         @Override
         public int size() {
-            return list.length;
+            return currentInsertIndex;
         }
 
         @Override
         public boolean isEmpty() {
-            for (String str : list) {
-                if (Objects.nonNull(str)) {
-                    return false;
-                }
-            }
-            return true;
+            return currentInsertIndex == 0;
         }
 
         @Override
         public boolean remove(final String value) {
             for (int i = 0; i < list.length; i++) {
+                // 매번 삭제되면 복사를 해야할까?
+                if (list[i] == null) {
+                    continue;
+                }
                 if (list[i].equals(value)) {
-                    list[i] = null;
-                    if (i == list.length - 1) {
-                        String[] newArray = new String[list.length - 1];
-                        System.arraycopy(list, 0, newArray, 0, i);
-                        list = newArray;
-                        return true;
+                    if (i == 0) {
+                        for (int j = 0; j < list.length - 1; j++) {
+                            list[j] = list[j + 1];
+                        }
                     } else {
-                        String[] newArray = new String[list.length - 1];
-                        System.arraycopy(list, 0, newArray, 0, i);
-                        System.arraycopy(list, i + 1, newArray, i, list.length - i - 1);
-                        list = newArray;
-                        return true;
+                        for (int j = 0; j < list.length; j++) {
+                            if (j >= i - 1) {
+                                list[i] = list[i + 2];
+                                continue;
+                            }
+                            list[i] = list[i + 1];
+                        }
                     }
+                    currentInsertIndex--;
+                    return true;
                 }
             }
             return false;
@@ -296,28 +375,18 @@ public class ListStudy {
 
         @Override
         public String remove(final int index) {
-            if (list.length <= index) {
-                throw new IllegalArgumentException("인덱스를 확인해주세요.");
+            if (currentInsertIndex <= index) {
+                throw new IndexOutOfBoundsException("인덱스를 확인해주세요.");
             }
             String temp = list[index];
-            list[index] = null;
-
-            if (index == list.length - 1) {
-                String[] newArray = new String[list.length - 1];
-                System.arraycopy(list, 0, newArray, 0, index);
-                list = newArray;
-            } else {
-                String[] newArray = new String[list.length - 1];
-                System.arraycopy(list, 0, newArray, 0, index);
-                System.arraycopy(list, index + 1, newArray, index, list.length - index - 1);
-                list = newArray;
-            }
+            remove(temp);
             return temp;
         }
 
         @Override
         public void clear() {
-            list = new String[1];
+            list = new String[10];
+            currentInsertIndex = 0;
         }
 
         @Override
